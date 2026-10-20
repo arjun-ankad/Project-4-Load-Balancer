@@ -2,8 +2,8 @@
 servers=10
 run_time=10000
 scale_cooldown=50
-min_task_time=3
-max_task_time=500
+min_task_time=10
+max_task_time=100
 arrival_chance=30
 max_arrivals=1
 status_interval=1000
