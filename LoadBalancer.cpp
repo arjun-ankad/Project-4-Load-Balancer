@@ -47,17 +47,23 @@ bool LoadBalancer::receive(const Request& r) {
 }
 
 void LoadBalancer::tick() {
-    // TODO (Arjun): one clock cycle, following Figure 2 of the design doc.
-    //  1. dispatch() so every idle server gets the next request.
-    //  2. tick() every server; when it returns true, count stats.processed.
-    //  3. checkScaling().
-    //  4. clock++.
+    dispatch();
+    for (WebServer* s : servers) {
+        if (s->tick()) {
+            stats.processed++;
+        }
+    }
+    checkScaling();
     clock++;
 }
 
 void LoadBalancer::dispatch() {
-    // TODO (Arjun): for each server, if it is idle and the queue is not
-    // empty, pop the front request and assign() it to that server.
+    for (WebServer* s : servers) {
+        if (queue.empty()) break;
+        if (s->isIdle()) {
+            s->assign(queue.pop());
+        }
+    }
 }
 
 void LoadBalancer::checkScaling() {
