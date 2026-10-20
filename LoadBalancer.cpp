@@ -27,7 +27,6 @@ LoadBalancer::~LoadBalancer() {
 
 void LoadBalancer::fillQueue(int n) {
     for (int i = 0; i < n; i++) {
-        stats.generated++;
         receive(makeRandomRequest(cfg.minTaskTime, cfg.maxTaskTime));
     }
     stats.startQueueSize = queueSize();
@@ -35,6 +34,7 @@ void LoadBalancer::fillQueue(int n) {
 }
 
 bool LoadBalancer::receive(const Request& r) {
+    stats.generated++;
     if (firewall.isBlocked(r.ipIn)) {
         stats.blocked++;
         log.event(Color::RED, "[" + name + "] cycle " + std::to_string(clock) +
