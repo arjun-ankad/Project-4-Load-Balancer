@@ -67,11 +67,18 @@ void LoadBalancer::dispatch() {
 }
 
 void LoadBalancer::checkScaling() {
-    // TODO (Arjun): the dynamic scaling rule from section 5 of the design doc.
-    //  - Do nothing until cfg.scaleCooldown cycles have passed since lastScaleTime.
-    //  - queueSize() > 80 * serverCount()  -> addServer()
-    //  - queueSize() < 50 * serverCount()  -> removeServer()
-    //  - After a change, set lastScaleTime = clock.
+    if (clock - lastScaleTime < cfg.scaleCooldown) return;
+
+    int S = serverCount();
+    int Q = queueSize();
+    if (Q > 80 * S) {
+        addServer();
+        lastScaleTime = clock;
+    } else if (Q < 50 * S) {
+        if (removeServer()) {
+            lastScaleTime = clock;
+        }
+    }
 }
 
 void LoadBalancer::addServer() {
