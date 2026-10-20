@@ -1,0 +1,31 @@
+/**
+ * @mainpage Ankad Load Balancer
+ *
+ * @section intro Overview
+ * A C++ discrete-time simulation of a company load balancer. Random web
+ * requests (source IP, destination IP, processing time, job type) arrive in
+ * a FIFO queue, and a LoadBalancer hands them to a pool of WebServer objects.
+ * Time is measured in clock cycles.
+ *
+ * @section classes Main classes
+ * - Request: one web request (struct).
+ * - RequestQueue: FIFO queue of requests.
+ * - WebServer: processes one request at a time.
+ * - LoadBalancer: owns the queue and servers, keeps the clock, dispatches
+ *   work, and scales the number of servers.
+ * - IPBlocker: firewall that rejects blocked IP ranges.
+ * - Config: settings read from config.txt.
+ * - Logger and Stats: colored console output, log file, and summary counters.
+ *
+ * @section scaling Dynamic scaling
+ * The load balancer keeps the queue between 50 and 80 requests per server.
+ * Above 80 x servers it adds a server; below 50 x servers it removes an idle
+ * one. After each change it waits scale_cooldown cycles before checking again.
+ *
+ * @section usage Build and run
+ * @code
+ * make
+ * ./loadbalancer
+ * @endcode
+ * Edit config.txt to change settings without recompiling.
+ */
