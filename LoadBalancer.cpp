@@ -113,11 +113,28 @@ bool LoadBalancer::removeServer() {
 }
 
 void LoadBalancer::printSummary(std::ostream& out) const {
-    // TODO (Arjun): decide what the summary shows. The log rubric needs at least:
-    //  starting queue size, ending queue size, task time range,
-    //  servers added/removed, active vs inactive servers, blocked requests,
-    //  plus 3 more useful facts (see DEVLOG.md for ideas).
-    out << "[" << name << "] summary not written yet\n";
+    int busy = busyServers();
+
+    out << "===== [" << name << "] Summary =====\n";
+
+    out << "Starting queue size:  " << stats.startQueueSize << "\n";
+    out << "Ending queue size:    " << queueSize() << "\n";
+    out << "Task time range:      " << cfg.minTaskTime << " - " << cfg.maxTaskTime << " cycles\n";
+
+    out << "Servers at start:     " << cfg.numServers << "\n";
+    out << "Servers at end:       " << serverCount() << "\n";
+    out << "Servers added:        " << stats.serversAdded << "\n";
+    out << "Servers removed:      " << stats.serversRemoved << "\n";
+    out << "Peak servers:         " << stats.peakServers << "\n";
+    out << "Min servers:          " << stats.minServers << "\n";
+    out << "Peak queue size:      " << stats.peakQueue << "\n";
+    out << "Requests generated:   " << stats.generated << "\n";
+
+    out << "Active servers:       " << busy << "\n";
+    out << "Inactive servers:     " << serverCount() - busy << "\n";
+    out << "Requests processed:   " << stats.processed << "\n";
+    out << "Requests blocked:     " << stats.blocked << "\n";
+    out << "Clock cycles run:     " << clock << "\n";
 }
 
 int LoadBalancer::queueSize() const {
